@@ -1935,10 +1935,20 @@ var spine;
 		AssetManager.prototype.downloadImageBitmap = function (url, success, error) {
 			var request = new XMLHttpRequest();
 			request.open("GET", url, true);
-			request.responseType = "blob";
+			// taffy: 注释spine.js原版代码喵
+			// request.responseType = "blob";
+			/* taffy分界线 */
+			// taffy: chrome浏览器blob文件流下载限制大小导致网络错误的解决办法喵，详见：https://blog.csdn.net/m0_37239448/article/details/134986161
+			request.responseType = "arraybuffer";
+			/* taffy分界线 */
 			request.onload = function () {
 				if (request.status == 200 || (request.status == 0 && request.readyState == 4)) {
-					createImageBitmap(request.response, {
+					// taffy: 注释spine.js原版代码喵
+					// createImageBitmap(request.response), {
+					/* taffy分界线 */
+					// taffy: chrome浏览器blob文件流下载限制大小导致网络错误的解决办法喵，详见：https://blog.csdn.net/m0_37239448/article/details/134986161
+					createImageBitmap(new Blob([request.response]), {
+					/* taffy分界线 */
 						premultiplyAlpha: 'none',
 						colorSpaceConversion: 'none'
 					}).then((imageBitmap)=>{

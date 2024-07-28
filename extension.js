@@ -114,6 +114,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                             this.removeSkill(info1[3][i]);
                         }
                         for (var i = 0; i < info2[3].length; i++) {
+                            // taffy: 主公技修复
+                            var info=get.info(info2[3][i]);
+                            if(info&&info.zhuSkill&&!this.isZhu2()) continue;
+                            /* taffy分界线 */
                             this.addSkill(info2[3][i]);
                         }
                         if (Array.isArray(maxHp)) {
@@ -213,7 +217,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                         } else {
                             // 拦截原来的logSkill函数, 加上如果使用非攻击技能,就播放特殊动画
                             // 本体1.9.117.2, 由于logSkill的trigger没有使用前就可以触发的, 所以仍然复制一份进行处理.
-                            if (lib.version >= '1.9.117.2') {
+                            // taffy: 注释皮肤切换原版代码
+                            // if (lib.version >= '1.9.117.2') {
+                            /* taffy分界线 */
+                            // taffy: 修复版本号检测喵
+                            if (lib.version >= '1.9.117.2' || lib.version >= '1.10.1') {
+                            /* taffy分界线 */
                                 console.log('======== version >= 1.9.117.2===========')
                                 if (!lib.element.player._pfqh_replace_logSkill) {
                                     // 保存原始的logSkill
@@ -221,7 +230,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     lib.element.player.logSkill = function (name, targets, nature, logv) {
                                         if (game.phaseNumber > 0) {
                                             if (name.indexOf("_") !== 0 && skinSwitch.filterSkills.indexOf(name) === -1 || this.skills.indexOf(name) !== -1) {
-                                                if (this.isAlive() && this.dynamic && !this.GongJi) {
+                                                // taffy: 注释皮肤切换原版代码
+                                                // if (this.isAlive() && this.dynamic && !this.GongJi) {
+                                                /* taffy分界线 */
+                                                // taffy: 修复一个复活后无动皮武将使用技能报错的逆天bug喵
+                                                if (this.isAlive() && this.dynamic && !this.GongJi && this.dynamic.primary !== null) {
+                                                /* taffy分界线 */
                                                     if (!this.doubleAvatar) {
                                                         let teshu = this.dynamic.primary.player.teshu
                                                         if (typeof teshu === 'object') {
@@ -300,6 +314,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                                     if (skillInfo.juexingji) {
                                                         specailEvent(this,'juexingji')
                                                     }
+                                                    // taffy: 补充检查限定技喵
+                                                    if (skillInfo.limited) {
+                                                        specailEvent(this,'xiandingji')
+                                                    }
+                                                    /* taffy分界线 */
 
                                                     // 检查使命技
                                                     if (name.endsWith('_fail')) {
@@ -395,6 +414,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                                 if (skillInfo.juexingji) {
                                                     specailEvent(this,'juexingji')
                                                 }
+                                                // taffy: 补充检查限定技喵
+                                                if (skillInfo.xiandingji) {
+                                                    specailEvent(this,'xiandingji')
+                                                }
+                                                /* taffy分界线 */
 
                                                 // 检查使命技
                                                 if (name.endsWith('_fail')) {
@@ -479,21 +503,51 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                         };
                                         if (info.sourceSkill) {
                                             logInfo.sourceSkill = name;
-                                            if (global.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // if (global.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            if (global.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.type = 'global';
-                                            } else if (players.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // } else if (players.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            } else if (players.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.type = 'player';
-                                            } else if (equips.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // } else if (equips.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            } else if (equips.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.type = 'equip';
                                             }
                                         } else {
-                                            if (global.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // if (global.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            if (global.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.sourceSkill = name;
                                                 logInfo.type = 'global';
-                                            } else if (players.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // } else if (players.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            } else if (players.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.sourceSkill = name;
                                                 logInfo.type = 'player';
-                                            } else if (equips.contains(name)) {
+                                            // taffy: 注释皮肤切换原版代码
+                                            // } else if (equips.contains(name)) {
+                                            /* taffy分界线 */
+                                            // taffy: 消灭contains报警喵
+                                            } else if (equips.includes(name)) {
+                                            /* taffy分界线 */
                                                 logInfo.sourceSkill = name;
                                                 logInfo.type = 'equip';
                                             } else {
@@ -501,7 +555,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                                 for (var i of players) {
                                                     var expand = [i];
                                                     game.expandSkills(expand);
-                                                    if (expand.contains(name)) {
+                                                    // taffy: 注释皮肤切换原版代码
+                                                    // if (expand.contains(name)) {
+                                                    /* taffy分界线 */
+                                                    // taffy: 消灭contains报警喵
+                                                    if (expand.includes(name)) {
+                                                    /* taffy分界线 */
                                                         bool = true;
                                                         logInfo.sourceSkill = i;
                                                         logInfo.type = 'player';
@@ -512,7 +571,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                                     for (var i of players) {
                                                         var expand = [i];
                                                         game.expandSkills(expand);
-                                                        if (expand.contains(name)) {
+                                                        // taffy: 注释皮肤切换原版代码
+                                                        // if (expand.contains(name)) {
+                                                        /* taffy分界线 */
+                                                        // taffy: 消灭contains报警喵
+                                                        if (expand.includes(name)) {
+                                                        /* taffy分界线 */
                                                             logInfo.sourceSkill = i;
                                                             logInfo.type = 'equip';
                                                             break;
@@ -916,7 +980,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     }
 
                                     // 过滤技能白名单, 只在单将模式下生效
-                                    if (!player.doubleAvatar) {
+                                    // taffy: 注释皮肤切换原版代码
+                                    // if (!player.doubleAvatar) {
+                                    /* taffy分界线 */
+                                    // taffy: 修复一个复活后无动皮武将使用技能报错的逆天bug喵
+                                    if (!player.doubleAvatar && player.dynamic.primary !== null) {
+                                    /* taffy分界线 */
                                         let teshu = player.dynamic.primary && player.dynamic.primary.player.teshu
                                         if (typeof teshu === 'object') {
                                             if (teshu.whitelist) {
@@ -1045,7 +1114,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                 },
                                 forced: true,
                                 filter: function (event, player) {
-                                    return !(lib.config[skinSwitch.decadeKey.newDecadeStyle] === "on")
+                                    // taffy: 注释extension.js原版代码喵
+                                    // return !(lib.config[skinSwitch.decadeKey.newDecadeStyle] === "on")
+                                    /* taffy分界线 */
+                                    // taffy: 增加一些选项喵
+                                    return lib.config[skinSwitch.decadeKey.newDecadeStyle] !== "on" || lib.config[skinSwitch.configKey.taffy_open_circle_top]
+                                    /* taffy分界线 */
                                 },
                                 content: function () {
                                     skinSwitch.skinSwitchCheckYH(player)
@@ -1059,7 +1133,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                 },
                                 forced: true,
                                 filter: function (event, player) {
-                                    return !(lib.config[skinSwitch.decadeKey.newDecadeStyle] === "on")
+                                    // taffy: 注释extension.js原版代码喵
+                                    // return !(lib.config[skinSwitch.decadeKey.newDecadeStyle] === "on")
+                                    /* taffy分界线 */
+                                    // taffy: 增加一些选项喵
+                                    return lib.config[skinSwitch.decadeKey.newDecadeStyle] !== "on" || lib.config[skinSwitch.configKey.taffy_open_circle_top]
+                                    /* taffy分界线 */
                                 },
                                 content: function () {
                                     skinSwitch.skinSwitchCheckYH(player)
@@ -1473,13 +1552,23 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                 var skills=info[3].slice(0);
                                 this.clearSkills(true);
                                 this.classList.add('fullskin');
-                                if(!game.minskin&&get.is.newLayout()&&!info[4].contains('minskin')){
+                                // taffy: 注释皮肤切换原版代码
+                                // if(!game.minskin&&get.is.newLayout()&&!info[4].contains('minskin')){
+                                /* taffy分界线 */
+                                // taffy: 消灭contains报警喵
+                                if(!game.minskin&&get.is.newLayout()&&!info[4].includes('minskin')){
+                                /* taffy分界线 */
                                     this.classList.remove('minskin');
                                     this.node.avatar.setBackground(character,'character');
                                 }
                                 else{
                                     this.node.avatar.setBackground(character,'character');
-                                    if(info[4].contains('minskin')){
+                                    // taffy: 注释皮肤切换原版代码
+                                    // if(info[4].contains('minskin')){
+                                    /* taffy分界线 */
+                                    // taffy: 消灭contains报警喵
+                                    if(info[4].includes('minskin')){
+                                    /* taffy分界线 */
                                         this.classList.add('minskin');
                                     }
                                     else if(game.minskin){
@@ -1499,6 +1588,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                 this.node.equips.show();
                                 this.name=character;
                                 this.name1=character;
+                                // taffy: 解决tempname报错喵
+                                this.tempname=[];
+                                  /* taffy分界线 */
                                 this.sex=info[0];
                                 this.group=info[1];
                                 this.hp=hp1;
@@ -1511,7 +1603,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                 if(this.classList.contains('minskin')&&this.node.name.querySelectorAll('br').length>=4){
                                     this.node.name.classList.add('long');
                                 }
-                                if(info[4].contains('hiddenSkill')&&!this.noclick){
+                                // taffy: 注释皮肤切换原版代码
+                                // if(info[4].contains('hiddenSkill')&&!this.noclick){
+                                /* taffy分界线 */
+                                // taffy: 消灭contains报警喵
+                                if(info[4].includes('hiddenSkill')&&!this.noclick){
+                                /* taffy分界线 */
                                     if(!this.hiddenSkills) this.hiddenSkills=[];
                                     this.hiddenSkills.addArray(skills);
                                     skills=[];
@@ -1578,7 +1675,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                         };
                                     }
                                     this.node.count.classList.add('p2');
-                                    if(info2[4].contains('hiddenSkill')&&!this.noclick){
+                                    // taffy: 注释皮肤切换原版代码
+                                    // if(info2[4].contains('hiddenSkill')&&!this.noclick){
+                                    /* taffy分界线 */
+                                    // taffy: 消灭contains报警喵
+                                    if(info2[4].includes('hiddenSkill')&&!this.noclick){
+                                    /* taffy分界线 */
                                         if(!this.hiddenSkills) this.hiddenSkills=[];
                                         this.hiddenSkills.addArray(info2[3]);
                                         this.classList.add(_status.video?'unseen2_v':'unseen2');
@@ -1597,6 +1699,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     this.node.hp.hide();
                                 }
                                 if(skill!=false){
+                                    // taffy: 主公技修复
+                                    skills=skills.filter(skill=>{
+                                      var info=get.info(skill);
+                                      if(info&&info.zhuSkill&&!this.isZhu2()) return false;
+                                      return true;
+                                    });
+                                    /* taffy分界线 */
                                     for(var i=0;i<skills.length;i++){
                                         this.addSkill(skills[i]);
                                     }
@@ -1871,7 +1980,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     })
 
                                 }
-                                let isCutBg = lib.config[skinSwitch.configKey.cugDynamicBg] &&  ui.arena.dataset.dynamicSkinOutcrop === 'on' && (ui.arena.dataset.newDecadeStyle === 'on')
+                                // taffy: 注释皮肤切换原版代码
+                                // let isCutBg = lib.config[skinSwitch.configKey.cugDynamicBg] &&  ui.arena.dataset.dynamicSkinOutcrop === 'on' && (ui.arena.dataset.newDecadeStyle === 'on')
+                                /* taffy分界线 */
+                                // taffy: 修复动皮背景裁剪选项失效的问题喵
+                                let isCutBg = lib.config[skinSwitch.configKey.cugDynamicBg] &&  ui.arena.dataset.dynamicSkinOutcrop === 'on'
+                                /* taffy分界线 */
 
                                 if (typeof animation == 'string') animation = { name: animation };
                                 if (this.doubleAvatar) {
@@ -1894,7 +2008,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                         height: [0, 1],
                                         clipParent: true
                                     }
-                                    if (animation.player && animation.player.beijing && isCutBg) {
+                                    // taffy: 注释extension.js原版代码喵
+                                    // if (animation.player && animation.player.beijing && isCutBg) {
+                                    /* taffy分界线 */
+                                    // taffy: 非十周年动皮不裁剪背景喵
+                                    if (animation.player && animation.player.beijing && isCutBg && (!lib.config[skinSwitch.configKey.taffy_cugDynamicBg] || (lib.config[skinSwitch.configKey.taffy_cugDynamicBg] && animation.player.shizhounian))) {
+                                    /* taffy分界线 */
                                         animation.player.beijing.clip = {
                                             x: [0, deputy ? 0.5 : 0],
                                             y: 0,
@@ -1904,7 +2023,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                         }
                                     }
                                 } else {
-                                    if (animation.player && animation.player.beijing && isCutBg) {
+                                    // taffy: 注释extension.js原版代码喵
+                                    // if (animation.player && animation.player.beijing && isCutBg) {
+                                    /* taffy分界线 */
+                                    // taffy: 非十周年动皮不裁剪背景喵
+                                    if (animation.player && animation.player.beijing && isCutBg && (!lib.config[skinSwitch.configKey.taffy_cugDynamicBg] || (lib.config[skinSwitch.configKey.taffy_cugDynamicBg] && animation.player.shizhounian))) {
+                                    /* taffy分界线 */
                                         animation.player.beijing.clip = {
                                             x: 0,
                                             y: 0,
@@ -1973,7 +2097,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                         }
                         let retryOverride = function (times, timer) {
                             if (times < 0) return
-                            if (!window.decadeUI || !lib.skill._decadeUI_usecardBegin) {
+                            // taffy: 注释extension.js原版代码喵
+                            // if (!window.decadeUI || !lib.skill._decadeUI_usecardBegin) {
+                            /* taffy分界线 */
+                            // taffy: 更正函数名称
+                            if (!window.decadeUI || !lib.skill.decadeUI_usecardBegin) {
+                            /* taffy分界线 */
                                 console.log(`第${times}次尝试`)
                                 let ti = setTimeout(() => {
                                     retryOverride(times-1, ti)
@@ -2064,6 +2193,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                     'previewSkinsDynamic': 'extension_皮肤切换_previewSkinsDynamic',  // 预览动皮皮肤使用动皮
                     'clickPlayerDynamic': 'extension_皮肤切换_clickPlayerDynamic',  // 单击角色出现换肤功能
                     'czgEnable': 'extension_皮肤切换_czgEnable',  // 藏珍阁开启
+                    // taffy: 新增一些额外选项喵
+                    'taffy_cugDynamicBg': 'extension_皮肤切换_taffy_cugDynamicBg',
+                    'taffy_open_circle_top': 'extension_皮肤切换_taffy_open_circle_top',
+                    /* taffy分界线 */
                 },
                 // 十周年UI的配置key
                 decadeKey: {
@@ -2098,7 +2231,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                 },
                 // 检查圆弧
                 skinSwitchCheckYH: function (player, forces) {
-                    if (lib.config['extension_十周年UI_newDecadeStyle'] == "on") return;
+                    // taffy: 注释extension.js原版代码喵
+                    // if (lib.config['extension_十周年UI_newDecadeStyle'] == "on") return;
+                    /* taffy分界线 */
+                    // taffy: 非十周年动皮添加圆弧喵
+                    if (lib.config['extension_十周年UI_newDecadeStyle'] == "on" && lib.config['extension_千幻聆音_enable'] || ui.arena.dataset.dynamicSkinOutcrop !== 'on' || !lib.config[skinSwitch.configKey.taffy_open_circle_top]) return;
+                    /* taffy分界线 */
                     if (!player || get.itemtype(player) != 'player') return;
                     let group = forces || player.group || 'weizhi';
                     let isYh = false;
@@ -2109,6 +2247,14 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                     }
 
                     let skinYh = player.getElementsByClassName("skinYh");
+                    // taffy: 非十周年动皮添加圆弧喵
+                    if (lib.config[skinSwitch.configKey.cugDynamicBg] && (!lib.config[skinSwitch.configKey.taffy_cugDynamicBg] || lib.config[skinSwitch.configKey.taffy_cugDynamicBg] && player.dynamic?.primary?.shizhounian)) {
+                        if (skinYh.length > 0) {
+                          player.removeChild(skinYh[0]);
+                        }
+                        return
+                    }
+                    /* taffy分界线 */
                     if (isYh && skinYh.length == 0) {
                         let yh = skinSwitch.createYH(group)
                         player.append(yh)
@@ -2136,6 +2282,20 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                             callback(false);
                             return;
                         }
+                    // taffy: 补充web端读取文件喵
+                    } else if (typeof resolveLocalFileSystemURL!='function') {
+                      try {
+                        game.readFile(lib.assetURL + path, (function (name) {
+                          return function (entry) {
+                            callback(true);
+                          }
+                        }(name)), function () {
+                          callback(false);
+                        });
+                      } catch (error) {
+                        callback(false);
+                      }
+                    /* taffy分界线 */
                     } else {
                         resolveLocalFileSystemURL(lib.assetURL + path, (function (name) {
                             return function (entry) {
@@ -2332,7 +2492,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                     yh.classList.add("skinYh")
                     yh.style.display = "block";
                     yh.style.position = "absolute";
-                    yh.style.top = "-22px";
+                    // taffy: 注释原版皮切代码喵
+                    // yh.style.top = "-22px";
+                    /* taffy分界线 */
+                    // taffy: 调整圆弧位置喵
+                    yh.style.top = "-35px";
+                    yh.style.left = "-9px";
+                    /* taffy分界线 */
                     yh.style.height = "50px";
                     yh.style.width = "131.1px";
                     yh.style.zIndex = "61";
@@ -2823,6 +2989,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                         let skinKeys = Object.keys(skinInfoMap)
                         // viewState.skins = skinList;
                         viewState.skinTotalWidth = (viewState.skinPerWidth + viewState.skinGap) * skinKeys.length - viewState.skinGap;
+                        // taffy: 修复千幻扩展皮肤顺序错乱问题
+                        skinKeys.remove('__default');
+                        skinKeys.unshift('__default');
+                        /* taffy分界线 */
                         for (let i = 0; i < skinKeys.length; i++) {
                             let skinKey = skinKeys[i]
 
@@ -2941,11 +3111,17 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                             game.qhly_setCurrentSkin(name, skin, function () {
                                                 viewState.refreshSkins();
                                             }, true);
+                                            // taffy: 非十周年动皮检测圆弧喵
+                                            skinSwitch.skinSwitchCheckYH(player)
+                                            /* taffy分界线 */
                                         } else {
                                             game.qhly_setCurrentSkin(name, skin, function () {
                                                 viewState.refreshSkins();
                                             }, true);
                                             setStaticSkin()
+                                            // taffy: 非十周年动皮检测圆弧喵
+                                            skinSwitch.skinSwitchCheckYH(player)
+                                            /* taffy分界线 */
                                         }
                                     })
                                 })(name, skin, skinView);
@@ -2982,9 +3158,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                             currentSelect = skin
                                             skinView.setBackground(name, 'character');
                                             setStaticSkin()
+                                            // taffy: 非十周年动皮检测圆弧喵
+                                            skinSwitch.skinSwitchCheckYH(player)
+                                            /* taffy分界线 */
                                         } else {
                                             skinSwitch.dynamic.selectSkinV3(skinKey, player, isPrimary)
                                             currentSelect = skin
+                                            // taffy: 非十周年动皮检测圆弧喵
+                                            skinSwitch.skinSwitchCheckYH(player)
+                                            /* taffy分界线 */
                                         }
                                         viewState.refreshSkins()
                                     })
@@ -4470,6 +4652,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                             if (data.action === 'GongJi' || data.action === 'TeShu') {
                                 // 音效默认寻找与待机动作同名的音效
                                 let playName = avatar.player.name
+                                // taffy: 十周年动皮区分不同出框攻击的音效
+                                if (avatar.player.shizhounian) {
+                                  playName = data.action === 'GongJi' ? avatar.player.gongji.audio : avatar.player.teshu.audio;
+                                }
+                                /* taffy分界线 */
                                 // 暂时不区分不同出框攻击的音效.
                                 // 开始播放音效, 音效名等同
                                 // 优先播放十周年同名文件夹下同名的音效文件
@@ -4636,41 +4823,155 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                             // 获取该文件夹下的所有技能和卡牌语音
                             if (skillPath) {
                                 let path = rootPath  + skillPath
-                                game.getFileList(path, function (folds, files) {
-                                    let name = isPrimary ? player.name1 : player.name2
-                                    for (let file of files) {
-                                        // 储存技能映射, 规则与模仿千幻, 与千幻一致
-                                        file = qhly_earse_ext(file);
-                                        let key
-                                        if (file === name) {
-                                            key = 'die/' + file
-                                            skinSwitch.audioMap[key] = '../' + path + '/' + file;
-                                        } else if (file === 'victory' || file === 'win') {
-                                            key = 'effect/' + id + '/' + skinId + '/' + 'victory'
-                                            skinSwitch.audioMap[key] = '../' + path + '/' + file;
-                                        } else {
-                                            key = 'skill/' + file
-                                            skinSwitch.audioMap[key] = '../' + path + '/' + file;
-                                        }
-                                        skinSwitch.avatarAudioSkinMap[name][key] = null
-                                    }
-                                })
+                                /* taffy分界线 */
+                                // taffy: 注释皮肤切换原版代码喵
+                                // game.getFileList(path, function (folds, files) {
+                                //     let name = isPrimary ? player.name1 : player.name2
+                                //     for (let file of files) {
+                                //         // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                //         file = qhly_earse_ext(file);
+                                //         let key
+                                //         if (file === name) {
+                                //             key = 'die/' + file
+                                //             skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                //         } else if (file === 'victory' || file === 'win') {
+                                //             key = 'effect/' + id + '/' + skinId + '/' + 'victory'
+                                //             skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                //         } else {
+                                //             key = 'skill/' + file
+                                //             skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                //         }
+                                //         skinSwitch.avatarAudioSkinMap[name][key] = null
+                                //     }
+                                // })
+                                /* taffy分界线 */
+                                // taffy: web端读取文件路径喵
+                                try {
+                                  game.getFileList(path, function (folds, files) {
+                                      let name = isPrimary ? player.name1 : player.name2
+                                      for (let file of files) {
+                                          // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                          file = qhly_earse_ext(file);
+                                          let key
+                                          if (file === name) {
+                                              key = 'die/' + file
+                                              skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                          } else if (file === 'victory' || file === 'win') {
+                                              key = 'effect/' + id + '/' + skinId + '/' + 'victory'
+                                              skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                          } else {
+                                              key = 'skill/' + file
+                                              skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                          }
+                                          skinSwitch.avatarAudioSkinMap[name][key] = null
+                                      }
+                                  })
+                                } catch (error) {
+                                  let folds = [];
+                                  let files = [];
+                                  if (path === 'extension/十周年UI/assets/dynamic/神郭嘉/倚星折月/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','diaohulishan.mp3','guohe.mp3','huogong.mp3','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','sghuishi1.mp3','sghuishi2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shen_guojia.mp3','shuishi1.mp3','shuishi2.mp3','shuiyanqijun.mp3','shunshou.mp3','stianyi1.mp3','stianyi2.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','victory.mp3','wanjian.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yuanjiao.mp3','zhibi.mp3','zuoxing1.mp3','zuoxing2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/神郭嘉/倚星折月2/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','diaohulishan.mp3','die.mp3','guohe.mp3','huogong.mp3','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','resghuishi1.mp3','resghuishi2.mp3','sghuishi1.mp3','sghuishi2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shen_guojia.mp3','shuishi1.mp3','shuishi2.mp3','shuiyanqijun.mp3','shunshou.mp3','stianyi1.mp3','stianyi2.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','vector.mp3','victory.mp3','wanjian.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yuanjiao.mp3','zhibi.mp3','zuoxing1.mp3','zuoxing2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/钟会/潜蛟觊天/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','chiling.mp3','diaohulishan.mp3','guohe.mp3','gz_guguoanbang.mp3','gz_haolingtianxia','gz_kefuzhongyuan','huogong.mp3','huoshaolianying','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','paiyi_re_zhonghui1.mp3','paiyi_re_zhonghui2.mp3','re_zhonghui.mp3','requanji1.mp3','requanji2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shuiyanqijun.mp3','shunshou.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','wanjian.mp3','wenhe.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yiyi.mp3','yuanjiao.mp3','zhibi.mp3','zili_re_zhonghui1.mp3','zili_re_zhonghui2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/钟会/潜蛟觊天2/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','chiling.mp3','diaohulishan.mp3','guohe.mp3','gz_guguoanbang.mp3','gz_haolingtianxia','gz_kefuzhongyuan','huogong.mp3','huoshaolianying','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','paiyi_re_zhonghui1.mp3','paiyi_re_zhonghui2.mp3','re_zhonghui.mp3','requanji1.mp3','requanji2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shuiyanqijun.mp3','shunshou.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','wanjian.mp3','wenhe.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yiyi.mp3','yuanjiao.mp3','zhibi.mp3','zili_re_zhonghui1.mp3','zili_re_zhonghui2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/赵襄/月痕芳影/audio') {
+                                    folds = [];
+                                    files = ['fanghun1.mp3', 'fanghun2.mp3', 'fuhan1.mp3', 'fuhan2.mp3', 'dc_zhaoxiang.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/赵襄/月痕芳影2/audio') {
+                                    folds = [];
+                                    files = ['fanghun1.mp3', 'fanghun2.mp3', 'fuhan1.mp3', 'fuhan2.mp3', 'dc_zhaoxiang.mp3'];
+                                  }
+                                  let name = isPrimary ? player.name1 : player.name2
+                                  for (let file of files) {
+                                      // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                      file = qhly_earse_ext(file);
+                                      let key
+                                      if (file === name) {
+                                          key = 'die/' + file
+                                          skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                      } else if (file === 'victory' || file === 'win') {
+                                          key = 'effect/' + id + '/' + skinId + '/' + 'victory'
+                                          skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                      } else {
+                                          key = 'skill/' + file
+                                          skinSwitch.audioMap[key] = '../' + path + '/' + file;
+                                      }
+                                      skinSwitch.avatarAudioSkinMap[name][key] = null
+                                  }
+                                }
                             }
 
                             if (cardPath) {
                                 let path = rootPath + cardPath
-                                game.getFileList(path, function (folds, files) {
-                                    for (let file of files) {
-                                        // 储存技能映射, 规则与模仿千幻, 与千幻一致
-                                        file = qhly_earse_ext(file);
-                                        // 储存动皮相关的id和角色名字
-                                        let id = player.dynamic.id
-                                        let skinId = isPrimary ? player.dynamic.primary.id : player.dynamic.deputy.id
-                                        let key = 'card/' + id + '/' + skinId + '/' + file
-                                        skinSwitch.audioMap[key] = '../' + path + '/' + file
-                                        skinSwitch.avatarAudioSkinMap[name][key] = null
-                                    }
-                                })
+                                // taffy: 注释皮肤切换原版代码喵
+                                // game.getFileList(path, function (folds, files) {
+                                //     for (let file of files) {
+                                //         // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                //         file = qhly_earse_ext(file);
+                                //         // 储存动皮相关的id和角色名字
+                                //         let id = player.dynamic.id
+                                //         let skinId = isPrimary ? player.dynamic.primary.id : player.dynamic.deputy.id
+                                //         let key = 'card/' + id + '/' + skinId + '/' + file
+                                //         skinSwitch.audioMap[key] = '../' + path + '/' + file
+                                //         skinSwitch.avatarAudioSkinMap[name][key] = null
+                                //     }
+                                // })
+                                /* taffy分界线 */
+                                // taffy: web端读取文件路径喵
+                                try {
+                                  game.getFileList(path, function (folds, files) {
+                                      for (let file of files) {
+                                          // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                          file = qhly_earse_ext(file);
+                                          // 储存动皮相关的id和角色名字
+                                          let id = player.dynamic.id
+                                          let skinId = isPrimary ? player.dynamic.primary.id : player.dynamic.deputy.id
+                                          let key = 'card/' + id + '/' + skinId + '/' + file
+                                          skinSwitch.audioMap[key] = '../' + path + '/' + file
+                                          skinSwitch.avatarAudioSkinMap[name][key] = null
+                                      }
+                                  })
+                                } catch (error) {
+                                  let folds = [];
+                                  let files = [];
+                                  if (path === 'extension/十周年UI/assets/dynamic/神郭嘉/倚星折月/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','diaohulishan.mp3','guohe.mp3','huogong.mp3','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','sghuishi1.mp3','sghuishi2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shen_guojia.mp3','shuishi1.mp3','shuishi2.mp3','shuiyanqijun.mp3','shunshou.mp3','stianyi1.mp3','stianyi2.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','victory.mp3','wanjian.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yuanjiao.mp3','zhibi.mp3','zuoxing1.mp3','zuoxing2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/神郭嘉/倚星折月2/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','diaohulishan.mp3','die.mp3','guohe.mp3','huogong.mp3','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','resghuishi1.mp3','resghuishi2.mp3','sghuishi1.mp3','sghuishi2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shen_guojia.mp3','shuishi1.mp3','shuishi2.mp3','shuiyanqijun.mp3','shunshou.mp3','stianyi1.mp3','stianyi2.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','vector.mp3','victory.mp3','wanjian.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yuanjiao.mp3','zhibi.mp3','zuoxing1.mp3','zuoxing2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/钟会/潜蛟觊天/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','chiling.mp3','diaohulishan.mp3','guohe.mp3','gz_guguoanbang.mp3','gz_haolingtianxia','gz_kefuzhongyuan','huogong.mp3','huoshaolianying','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','paiyi_re_zhonghui1.mp3','paiyi_re_zhonghui2.mp3','re_zhonghui.mp3','requanji1.mp3','requanji2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shuiyanqijun.mp3','shunshou.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','wanjian.mp3','wenhe.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yiyi.mp3','yuanjiao.mp3','zhibi.mp3','zili_re_zhonghui1.mp3','zili_re_zhonghui2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/钟会/潜蛟觊天2/audio') {
+                                    folds = [];
+                                    files = ['bingliang.mp3','chiling.mp3','diaohulishan.mp3','guohe.mp3','gz_guguoanbang.mp3','gz_haolingtianxia','gz_kefuzhongyuan','huogong.mp3','huoshaolianying','jiedao.mp3','jiu.mp3','juedou.mp3','lebu.mp3','lianjunshengyan.mp3','lulitongxin.mp3','nanman.mp3','paiyi_re_zhonghui1.mp3','paiyi_re_zhonghui2.mp3','re_zhonghui.mp3','requanji1.mp3','requanji2.mp3','sha.mp3','sha_fire.mp3','sha_thunder.mp3','shan.mp3','shandian.mp3','shuiyanqijun.mp3','shunshou.mp3','tao.mp3','taoyuan.mp3','tiesuo.mp3','wanjian.mp3','wenhe.mp3','wugu.mp3','wuxie.mp3','wuzhong.mp3','yiyi.mp3','yuanjiao.mp3','zhibi.mp3','zili_re_zhonghui1.mp3','zili_re_zhonghui2.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/赵襄/月痕芳影/audio') {
+                                    folds = [];
+                                    files = ['fanghun1.mp3', 'fanghun2.mp3', 'fuhan1.mp3', 'fuhan2.mp3', 'dc_zhaoxiang.mp3'];
+                                  } else if (path === 'extension/十周年UI/assets/dynamic/赵襄/月痕芳影2/audio') {
+                                    folds = [];
+                                    files = ['fanghun1.mp3', 'fanghun2.mp3', 'fuhan1.mp3', 'fuhan2.mp3', 'dc_zhaoxiang.mp3'];
+                                  }
+                                  for (let file of files) {
+                                    // 储存技能映射, 规则与模仿千幻, 与千幻一致
+                                    file = qhly_earse_ext(file);
+                                    // 储存动皮相关的id和角色名字
+                                    let id = player.dynamic.id
+                                    let skinId = isPrimary ? player.dynamic.primary.id : player.dynamic.deputy.id
+                                    let key = 'card/' + id + '/' + skinId + '/' + file
+                                    skinSwitch.audioMap[key] = '../' + path + '/' + file
+                                    skinSwitch.avatarAudioSkinMap[name][key] = null
+                                  }
+                                }
+                                /* taffy分界线 */
                             }
 
                             // 添加取消替换语音映射的回调函数.
@@ -4684,10 +4985,19 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     for(let arg of arguments){  //将参数拼接成一个字符串，方便查找映射
                                         if(typeof arg == 'string' || typeof arg == 'number'){
                                             string = string+"/"+arg;
+                                        // taffy: 修复皮肤语音失效的问题喵
+                                        } else if (get.objtype(arg) === "object") {
+                                            string = string + "/" + arg.path;
+                                        // taffy分界线
                                         }else{
                                             others.push(arg);
                                         }
                                     }
+                                    // taffy: 修复皮肤语音失效的问题喵
+                                    if (string.split('.').length > 1) {
+                                      string = string.substring(0, string.lastIndexOf("."))  //截取文件名
+                                    }
+                                    // taffy分界线
                                     let replaces = string.split('/')
                                     let replace = ''
 
@@ -4765,6 +5075,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                                     }
                                     console.log('string...', string)
                                     if(replace.length){
+                                        // taffy: 修复皮肤语音失效的问题喵
+                                        if (replace.split('.').length > 1) {
+                                          replace = replace.substring(0, replace.lastIndexOf("."))  //截取文件名
+                                        }
+                                        // taffy分界线
                                         let rp = skinSwitch.audioMap[replace];
                                         if(rp){
                                             //如果存在映射，用映射的路径替换原有的路径，并调用原来的音频播放函数，以达到替换配音的效果。
@@ -9982,6 +10297,18 @@ game.import("extension",function(lib,game,ui,get,ai,_status) {
                 init:  false,
                 intro: '点击开启后会加入右边菜单'
             },
+            // taffy: 提供一些额外选项
+            'taffy_cugDynamicBg': {
+              name: "非十周年动皮不裁剪背景",
+              "init": true,
+              "intro": "非十周年动皮动皮在待机处不裁剪动态背景",
+            },
+            "taffy_open_circle_top":{
+              name: "开启十周年圆顶",
+              "init": true,
+              "intro": "设置此选项，十周年样式角色框将会显示顶部圆弧。",
+            },
+            /* taffy分界线 */
 
         },
         help:{},
